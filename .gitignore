@@ -1,0 +1,43 @@
+# --- LaTeX Build-Artefakte ---
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.synctex(busy)
+*.bbl
+*.bcf
+*.blg
+*.run.xml
+*.nav
+*.snm
+*.vrb
+*.idx
+*.ilg
+*.ind
+*.acn
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+*.ist
+*.xdy
+*.thm
+
+# PDF nur ignorieren, wenn du es nicht mit versionieren willst.
+# Auskommentieren, falls du die fertigen PDFs im Repo haben möchtest.
+*.pdf
+
+# --- Editor / OS ---
+.DS_Store
+Thumbs.db
+
+# --- Persönliche VS-Code-Einstellungen (falls .vscode/ genutzt wird) ---
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json

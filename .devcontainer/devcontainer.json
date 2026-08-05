@@ -1,0 +1,24 @@
+{
+  "name": "LaTeX Environment",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "workspaceFolder": "/workspace",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
+  "remoteUser": "vscode",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "james-yu.latex-workshop",
+        "streetsidesoftware.code-spell-checker",
+        "streetsidesoftware.code-spell-checker-german"
+      ],
+      "settings": {
+        "latex-workshop.latex.recipe.default": "latexmk",
+        "latex-workshop.latex.autoBuild.run": "onFileChange",
+        "latex-workshop.view.pdf.viewer": "tab",
+        "latex-workshop.linting.chktex.enabled": true
+      }
+    }
+  }
+}
