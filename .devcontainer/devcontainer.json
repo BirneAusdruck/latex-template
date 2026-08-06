@@ -6,18 +6,32 @@
   "workspaceFolder": "/workspace",
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
   "remoteUser": "vscode",
+  "containerEnv": {
+    "CLAUDE_CONFIG_DIR": "/home/vscode/.claude"
+  },
+  "mounts": [
+    "source=claude-code-config-shared,target=/home/vscode/.claude,type=volume"
+  ],
   "customizations": {
     "vscode": {
       "extensions": [
         "james-yu.latex-workshop",
         "streetsidesoftware.code-spell-checker",
-        "streetsidesoftware.code-spell-checker-german"
+        "streetsidesoftware.code-spell-checker-german",
+        "anthropic.claude-code"
       ],
       "settings": {
         "latex-workshop.latex.recipe.default": "latexmk",
         "latex-workshop.latex.autoBuild.run": "onFileChange",
         "latex-workshop.view.pdf.viewer": "tab",
-        "latex-workshop.linting.chktex.enabled": true
+        "latex-workshop.linting.chktex.enabled": true,
+        "cSpell.language": "de,en",
+        "cSpell.ignorePaths": [
+          "**/*.json",
+          "**/*.jsonc",
+          "**/Dockerfile",
+          "**/*.dockerfile"
+        ]
       }
     }
   }
