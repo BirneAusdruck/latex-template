@@ -151,3 +151,7 @@ Folgt dem Anmelde-Prompt. Danach bleibt die Anmeldung dank des Volume-Mounts üb
 ## Claude Code nicht nutzen
 
 Einfach beim Öffnen des Projekts die **`ohne-claude`**-Konfiguration wählen (siehe [Zwei Konfigurationen zur Auswahl](#zwei-konfigurationen-zur-auswahl)). Kein Umschreiben von Dateien nötig, beide Varianten liegen bereits fertig nebeneinander im Repo.
+
+## Aufräumen auf fremden/geliehenen Geräten
+
+Falls du dieses Template mal auf einem Gerät nutzt, das dir nicht gehört (Uni-Rechner, geliehener Laptop, ...): Der Claude-Code-Login liegt in einem Docker-Volume und verschwindet **nicht automatisch**, wenn du das Repo löschst. Schritt-für-Schritt-Anleitung zum vollständigen Entfernen (Logout, Container, Image, Volume): [`docs/CLEANUP-CHECKLIST.md`](docs/CLEANUP-CHECKLIST.md).
