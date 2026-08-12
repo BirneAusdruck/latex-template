@@ -1,11 +1,16 @@
 {
-  "name": "LaTeX Environment",
+  "name": "LaTeX Environment (mit Claude Code)",
   "build": {
-    "dockerfile": "Dockerfile"
+    "dockerfile": "../Dockerfile",
+    "context": ".."
   },
   "workspaceFolder": "/workspace",
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
   "remoteUser": "vscode",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {},
+    "ghcr.io/anthropics/devcontainer-features/claude-code:1": {}
+  },
   "containerEnv": {
     "CLAUDE_CONFIG_DIR": "/home/vscode/.claude"
   },

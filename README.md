@@ -1,8 +1,33 @@
 # LaTeX Dev Container (Template)
 
-Portable LaTeX-Umgebung für VS Code via Docker. Funktioniert auf jedem Gerät, auf dem Docker und VS Code laufen — aktuell getestet/gedacht für Linux, sollte aber unverändert auch unter Windows/macOS mit Docker Desktop funktionieren.
+Portable LaTeX-Umgebung für VS Code via Docker. Funktioniert auf jedem Gerät, auf dem Docker und VS Code laufen, aktuell getestet/gedacht für Linux, sollte aber unverändert auch unter Windows/macOS mit Docker Desktop funktionieren.
 
-Dieses Repo ist als **Template** gedacht: Auf GitHub unter Repo-Settings → "Template repository" markieren. Für jeden neuen Kontext (z. B. private Dokumente, Skripte etc.) dann über die Template-Funktion ein neues Repo erzeugen und dort die eigenen `.tex`-Dateien ablegen.
+Dieses Repo ist als **Template** gedacht: Auf GitHub unter Repo-Settings → "Template repository" markieren. Für jeden neuen Kontext (z. B. private Dokumente, Uni, Skripte etc.) dann über die Template-Funktion ein neues Repo erzeugen und dort die eigenen `.tex`-Dateien ablegen.
+
+## Zwei Konfigurationen zur Auswahl
+
+Das Template bringt **zwei Dev-Container-Konfigurationen** mit, zwischen denen du direkt in VS Code umschalten kannst — kein Kopieren, kein manuelles Bearbeiten nötig:
+
+| Konfiguration | Enthält | Wann sinnvoll |
+|---|---|---|
+| **mit-claude** | LaTeX-Umgebung + Claude Code CLI/Extension | Wenn du Claude Code direkt im Projekt nutzen willst |
+| **ohne-claude** | Nur die reine LaTeX-Umgebung | Wenn du Claude Code nicht brauchst — schlankeres Image, schnellerer Build |
+
+Beide Varianten nutzen **dieselbe, gemeinsame** `.devcontainer/Dockerfile` (reine LaTeX-Basis auf `debian:bookworm-slim`) — der Unterschied liegt ausschließlich in der jeweiligen `devcontainer.json`.
+
+### Konfiguration auswählen
+
+```
+Strg+Shift+P → Dev Containers: Switch Container Configuration
+```
+
+Dort erscheinen beide Varianten (`mit-claude`, `ohne-claude`) zur Auswahl. VS Code baut direkt mit der gewählten Konfiguration.
+
+Falls du beim allerersten Öffnen des Projekts direkt zur Auswahl kommen willst, statt eine Konfiguration automatisch per Popup vorgeschlagen zu bekommen:
+```
+Strg+Shift+P → Dev Containers: Reopen in Container
+```
+— zeigt bei mehreren vorhandenen Konfigurationen ebenfalls eine Auswahl an.
 
 ## Empfohlene Struktur (ein Repo pro Kontext, nicht pro Dokument)
 
@@ -37,25 +62,23 @@ scripts/                              # Variante 3:  eigenes Repo, aus diesem Te
 └── script2.tex
 ```
 
-Achtung bei Variante 3! Durch die auto Build und PDF creation features werden eine vielzahl von Compilaten pro `.tex` Datei erzeugt.
+Achtung bei Variante 3! Durch die auto Build und PDF creation features werden eine Vielzahl von Compilaten pro `.tex` Datei erzeugt.
 
-Jeder Kontext = ein Repo = ein VS-Code-Workspace, den du direkt in einem Rutsch im Dev Container öffnest. Kein Vermischen von Dokumenten aus unterschiedlichen Lebensbereichen, aber auch kein `.devcontainer/` pro einzelnem Übungsblatt.
+Jeder Kontext = ein Repo = ein VS-Code-Projekt, den du direkt in einem im Devcontainer öffnest. Kein Vermischen von Dokumenten aus unterschiedlichen Lebensbereichen, aber auch kein `.devcontainer/` pro einzelnem Übungsblatt.
 
 ## Voraussetzungen (auf jedem Gerät, das genutzt werden soll)
 
 1. **Docker** (bzw. Docker Engine) installiert und laufend
 2. **VS Code**
 3. VS-Code-Erweiterung **"Dev Containers"** (`ms-vscode-remote.remote-containers`)
-4. **`claude-base:latest`-Image lokal gebaut** — siehe [Claude Code einbinden](#claude-code-einbinden-standard). Dieses Template baut standardmäßig auf diesem Image auf; ohne es schlägt der Container-Build fehl.
 
-Das sind die einzigen lokalen Abhängigkeiten — der Rest (TeX Live, latexmk, biber, LaTeX Workshop, Claude Code, ...) steckt im Container.
+Das sind die einzigen lokalen Abhängigkeiten. Kein Vorab-Build eines eigenen Basis-Images mehr nötig — beide Varianten bauen direkt aus diesem Repo, ohne externe Abhängigkeit auf dem Host.
 
 ## Nutzung
 
 1. Diesen Ordner (bzw. dein LaTeX-Projekt, in das du `.devcontainer/` kopierst) in VS Code öffnen.
-2. Über VS Code das Projekt im Container öffnen
-   (entweder per automatischen Aufforderung von VS Code oder über den command `Strg+Shift+P` → **"Dev Containers: Reopen in Container"**).
-3. Beim erstmaligen Start wird das Docker-Image gebaut (dauert ein paar Minuten, danach nur noch Sekunden dank Cache). Voraussetzung: `claude-base:latest` wurde bereits lokal gebaut (siehe [Voraussetzungen](#voraussetzungen-auf-jedem-gerät-das-genutzt-werden-soll) und [Claude Code einbinden](#claude-code-einbinden-standard)).
+2. Gewünschte Konfiguration wählen (siehe [Zwei Konfigurationen zur Auswahl](#zwei-konfigurationen-zur-auswahl)) und im Container öffnen.
+3. Beim erstmaligen Start wird das Docker-Image gebaut (dauert ein paar Minuten, danach nur noch Sekunden dank Cache).
 4. `main.tex` öffnen und mit `Strg+Alt+B` bauen, oder einfach speichern — Autobuild ist aktiv.
 5. PDF öffnet sich automatisch in einem Tab daneben.
 
@@ -65,8 +88,11 @@ Das sind die einzigen lokalen Abhängigkeiten — der Rest (TeX Live, latexmk, b
 # Entspricht der Variante 1
 .
 ├── .devcontainer/
-│   ├── Dockerfile          # TeX-Live-Umgebung + Tools
-│   └── devcontainer.json   # VS-Code-Konfiguration, Extensions, Settings
+│   ├── Dockerfile          # gemeinsame TeX-Live-Umgebung + Tools, für beide Varianten
+│   ├── mit-claude/
+│   │   └── devcontainer.json
+│   └── ohne-claude/
+│       └── devcontainer.json
 ├── .vscode/                # optional, lokale Extra-Settings
 ├── kontext_1               # Ordner unterteilte `.tex` files
 │   ├── main.tex            # Beispieldokument zum Testen
@@ -77,95 +103,24 @@ Das sind die einzigen lokalen Abhängigkeiten — der Rest (TeX Live, latexmk, b
 
 ## Anpassen
 
-- **Mehr/weniger TeX-Pakete**: Liste in `.devcontainer/Dockerfile` erweitern oder auf `texlive-full` umstellen (dann Base-Image deutlich größer, ~5-7 GB mehr).
-- **Andere Extensions**: In `devcontainer.json` unter `customizations.vscode.extensions` ergänzen.
+- **Mehr/weniger TeX-Pakete**: Liste in `.devcontainer/Dockerfile` erweitern oder auf `texlive-full` umstellen (dann Base-Image deutlich größer, ~5-7 GB mehr). Wirkt sich auf **beide** Varianten aus, da sie sich dieselbe Dockerfile teilen.
+- **Andere Extensions**: In der jeweiligen `devcontainer.json` (`mit-claude/` bzw. `ohne-claude/`) unter `customizations.vscode.extensions` ergänzen.
 - **Mehrere Projekte**: Einfach den `.devcontainer/`-Ordner in jedes LaTeX-Projekt kopieren, oder ein zentrales Template-Repo daraus machen und pro Projekt klonen/forken.
 
-## Claude Code einbinden (Standard)
+## Claude Code (Variante `mit-claude`)
 
-Dieses Template ist standardmäßig mit der [Claude Code](https://code.claude.com) VS-Code-Extension + CLI ausgestattet, inklusive persistentem Login über einen Rebuild hinweg. Dafür baut `.devcontainer/Dockerfile` auf einem eigenen, wiederverwendbaren Basis-Image (`claude-base:latest`) auf, statt direkt auf `debian:bookworm-slim`. Das spart bei mehreren aus diesem Template erzeugten Repos wiederholte Installationszeit und -bandbreite, da Node.js + Claude Code CLI nur einmal gebaut werden.
+Diese Variante bindet Claude Code über das **offizielle Dev Container Feature von Anthropic** ein — kein eigenes Basis-Image, kein lokaler Vorab-Build nötig:
 
-### Einmalige Einrichtung (auf jedem Gerät, das genutzt werden soll)
-
-**1. Eigenes Dockerfile für das Basis-Image** anlegen, außerhalb dieses Repos (z. B. unter `~/docker-bases/claude-base/Dockerfile`):
-
-```dockerfile
-# syntax=docker/dockerfile:1
-FROM debian:bookworm-slim
-
-# ---- Konfiguration ----------------------------------------------------
-ARG USERNAME=vscode
-ARG USER_UID=1000
-ARG USER_GID=1000
-ARG NODE_MAJOR=20
-
-# ---- Basis-Pakete -------------------------------------------------------
-# curl/ca-certificates: für NodeSource-Setup-Skript
-# git: üblich für Dev-Container-Workflows
-# sudo: falls der User später Root-Rechte im Container braucht
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        curl \
-        ca-certificates \
-        git \
-        sudo \
-    && rm -rf /var/lib/apt/lists/*
-
-# ---- Node.js -------------------------------------------------------------
-# Wird noch als root installiert, damit die globale npm-Installation
-# im nächsten Schritt für alle User zugänglich ist.
-RUN curl -fsSL https://deb.nodesource.com/setup_${NODE_MAJOR}.x | bash - \
-    && apt-get install -y --no-install-recommends nodejs \
-    && rm -rf /var/lib/apt/lists/*
-
-# ---- Claude Code CLI -------------------------------------------------------
-RUN npm install -g @anthropic-ai/claude-code
-
-# ---- Non-root User anlegen -------------------------------------------------
-# Falls User/Group-ID schon existiert (kommt bei manchen Base-Images vor),
-# bricht useradd/groupadd sonst ab – daher der Check.
-RUN if ! getent group "${USER_GID}" >/dev/null; then \
-        groupadd --gid "${USER_GID}" "${USERNAME}"; \
-    fi \
-    && if ! id -u "${USER_UID}" >/dev/null 2>&1; then \
-        useradd --uid "${USER_UID}" --gid "${USER_GID}" -m -s /bin/bash "${USERNAME}"; \
-    fi \
-    && usermod -aG sudo "${USERNAME}" \
-    && echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USERNAME} \
-    && chmod 0440 /etc/sudoers.d/${USERNAME}
-
-# ---- Claude-Config-Verzeichnis vorbereiten ---------------------------------
-# Wird später per Volume gemountet (siehe devcontainer.json) - hier nur
-# sicherstellen, dass der Ordner existiert und dem User gehört, damit
-# der allererste Mount nicht mit root-Berechtigungen daherkommt.
-RUN mkdir -p /home/${USERNAME}/.claude \
-    && chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}/.claude
-
-USER ${USERNAME}
-WORKDIR /home/${USERNAME}
-
-# Kein CMD/ENTRYPOINT nötig - dieses Image dient nur als Basis (FROM ...)
-# für projektspezifische Dockerfiles, nicht zum direkten Ausführen.
+```json
+"features": {
+  "ghcr.io/devcontainers/features/node:1": {},
+  "ghcr.io/anthropics/devcontainer-features/claude-code:1": {}
+}
 ```
 
-**2. Lokal bauen:**
+Das Feature installiert Node.js (Voraussetzung für die Claude Code CLI) sowie Claude Code selbst automatisch beim Bauen des Containers, direkt aus Anthropics zentral gepflegter Quelle. Updates an Claude Code kommen dadurch automatisch mit, ohne dass du selbst etwas pflegen musst.
 
-```bash
-docker build -t claude-base:latest .
-```
-
-Dieser Schritt ist pro Gerät **einmalig** nötig — danach kann jedes aus diesem Template erzeugte Repo darauf zugreifen, ohne den Build zu wiederholen.
-
-### Wie es in diesem Template verwendet wird
-
-`.devcontainer/Dockerfile` startet standardmäßig mit:
-
-```dockerfile
-FROM claude-base:latest
-
-# ab hier nur noch die LaTeX-spezifischen Installationsschritte
-```
-
-`.devcontainer/devcontainer.json` enthält dazu passend:
+### Login-Persistenz über Rebuilds hinweg
 
 ```json
 "containerEnv": {
@@ -173,38 +128,26 @@ FROM claude-base:latest
 },
 "mounts": [
   "source=claude-code-config-shared,target=/home/vscode/.claude,type=volume"
-],
-"customizations": {
-  "vscode": {
-    "extensions": [
-      "anthropic.claude-code"
-    ]
-  }
-}
+]
 ```
 
-Der Volume-Name `claude-code-config-shared` ist bewusst **fest** gewählt (nicht `${devcontainerId}`): Alle aus diesem Template erzeugten Repos teilen sich denselben Login — einmal `claude` im Terminal ausführen und einloggen reicht für alle Projekte.
+Der Volume-Name `claude-code-config-shared` ist bewusst **fest** gewählt (nicht `${devcontainerId}`): Alle aus diesem Template erzeugten Repos teilen sich denselben Login — einmal `claude` im Terminal ausführen und einloggen reicht für alle Projekte, auch über Rebuilds hinweg.
 
-**Hinweis:** `claude-base:latest` existiert nur lokal auf dem Rechner, auf dem es gebaut wurde. Auf jedem neuen Gerät muss der Build-Schritt oben einmal wiederholt werden, bevor Repos aus diesem Template dort geöffnet werden können.
+Falls du stattdessen pro Projekt einen **eigenen, getrennten** Login willst (kein geteilter Zugang zwischen Repos), `${devcontainerId}` statt des festen Namens verwenden:
+```json
+"mounts": [
+  "source=claude-code-config-${devcontainerId},target=/home/vscode/.claude,type=volume"
+]
+```
 
-## Claude Code entfernen / nicht nutzen (optional)
+### Erste Anmeldung
 
-Falls du Claude Code nicht brauchst und keine Abhängigkeit von `claude-base:latest` haben willst, kannst du die Integration in einem aus dem Template erzeugten Repo entfernen. Da `claude-base:latest` den `vscode`-User bereits mitbringt, musst du diesen beim Wechsel auf ein reines Debian-Image selbst nachbilden.
+Nach dem ersten Start der `mit-claude`-Variante im Container-Terminal:
+```bash
+claude
+```
+Folgt dem Anmelde-Prompt. Danach bleibt die Anmeldung dank des Volume-Mounts über jeden weiteren Rebuild hinweg erhalten.
 
-1. **In `.devcontainer/Dockerfile`** die erste Zeile ersetzen:
-   ```dockerfile
-   FROM debian:bookworm-slim
-   ```
-2. **Direkt danach den `vscode`-User selbst anlegen**, da dieser sonst (anders als bei `claude-base:latest`) nicht existiert:
-   ```dockerfile
-   ARG USERNAME=vscode
-   ARG USER_UID=1000
-   ARG USER_GID=$USER_UID
+## Claude Code nicht nutzen
 
-   RUN groupadd --gid $USER_GID $USERNAME \
-       && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME
-   ```
-   Diese Zeilen vor `USER vscode` bzw. vor der ersten Stelle einfügen, an der der `vscode`-User referenziert wird (z. B. vor den `apt-get install`-Schritten, die als root laufen müssen, und nach denen dann auf `USER vscode` gewechselt wird).
-3. **In `.devcontainer/devcontainer.json`** die Einträge `containerEnv`, den `mounts`-Block sowie `"anthropic.claude-code"` aus `customizations.vscode.extensions` löschen.
-
-Damit entfällt die Voraussetzung, vorab `claude-base:latest` zu bauen, und der Container läuft komplett unabhängig davon — inklusive eigenständiger `vscode`-User-Anlage direkt im Projekt-Dockerfile.
+Einfach beim Öffnen des Projekts die **`ohne-claude`**-Konfiguration wählen (siehe [Zwei Konfigurationen zur Auswahl](#zwei-konfigurationen-zur-auswahl)). Kein Umschreiben von Dateien nötig, beide Varianten liegen bereits fertig nebeneinander im Repo.
