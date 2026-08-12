@@ -29,6 +29,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     latexmk \
     chktex \
     git \
+    openssh-client\
     curl \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
